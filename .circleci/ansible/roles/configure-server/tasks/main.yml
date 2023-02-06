@@ -1,0 +1,33 @@
+
+# Back-end server configuration playbook goes here.
+---
+- name: "update local apt repo."
+  become: true
+  apt:
+    update_cache: yes
+
+- name: "upgrade apt packages"
+  become: true
+  apt:
+    upgrade: yes
+
+
+- name: "remove stale dependencies"
+  become: true
+  apt:
+    autoremove: yes
+
+- name: "install dependencies [nodejs and npm]."
+  become: true
+  apt:
+    name: ["nodejs", "npm"]
+    state: latest
+    update_cache: yes
+
+- name: "install pm2"
+  become: true
+  npm:
+    name: pm2
+    global: yes
+    production: yes
+    state: present
