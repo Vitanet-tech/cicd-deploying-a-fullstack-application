@@ -208,7 +208,7 @@ jobs:
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}      
 
-#file migrations to db
+# Migrations to db
   run-migrations:
     docker:
       # Docker image here that supports NodeJS
@@ -236,7 +236,7 @@ jobs:
           command: |
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
-                curl --insecure https://kvdb.io/4VJ274WBBHEq9RdkvTFDeu/migration_${CIRCLE_WORKFLOW_ID:0:7} -d '1'
+                curl --insecure https://kvdb.io/7Phs8KuV9FjEJy1nJS2Fix/migration_${CIRCLE_WORKFLOW_ID:0:7} -d '1'
             fi
      # Here's where you will add some code to rollback on failure
       - destroy-environment:
@@ -358,8 +358,8 @@ workflows:
               only: [master]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
-      # - run-migrations:
-      #     requires: [configure-infrastructure]
+      - run-migrations:
+          requires: [configure-infrastructure]
       # - deploy-frontend:
       #     requires: [run-migrations]
       # - deploy-backend:
