@@ -37,6 +37,7 @@ commands:
               npm run migrations:revert
             fi
 
+############################################################
 # Job to Build frontend and backend Codes           
 jobs:
   build-frontend:
@@ -73,6 +74,7 @@ jobs:
           paths: [backend/node_modules]
           key: backend-build
 
+########################################################
 # Job to Test frontend and backend Codes
   test-frontend:
     docker:
@@ -102,6 +104,7 @@ jobs:
               npm install
               npm run test
 
+##############################################################
 # Job to scan our frontend and backend Codes to check for vulnerabilities           
   scan-frontend:
     docker:
@@ -133,7 +136,7 @@ jobs:
               # npm install oauth-sign@^0.9.0
               npm audit fix --audit-level=critical
 
-
+#################################################################
 # deploy infrastructure for backend and frontend.
   #deploy EC2 instance for backend
   deploy-infrastructure:
@@ -178,6 +181,7 @@ jobs:
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
+ ####################################################################
   # Exercise: Configure infra after deployment.
   configure-infrastructure:
     docker:
@@ -209,6 +213,8 @@ jobs:
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}      
 
+
+###########################################################
 # Migrations to db
   run-migrations:
     docker:
@@ -232,6 +238,7 @@ jobs:
             npm install
             npm run migrations > migrations_dump.txt
             cat migrations_dump.txt
+            npm audit fix --audit-level=critical
       - run:
           name: Send migration results to kvdb.io
           command: |
@@ -243,6 +250,7 @@ jobs:
       - destroy-environment:
             workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}       
 
+#############################################################
 #   deploy-frontend
   deploy-frontend:
     docker:
@@ -343,6 +351,7 @@ jobs:
       - revert-migrations:
             workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}  
 
+#############################################################
 #   smoke-test
   smoke-test:
     docker:
@@ -396,6 +405,7 @@ jobs:
       - revert-migrations:
             workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}  
 
+############################################################
 #   cloudfront-update:
   cloudfront-update:
     docker:
