@@ -226,10 +226,10 @@ jobs:
       - restore_cache:
           keys: [backend-build]
       
-      # - run:
-      #     name: Install dependencies
-      #     command: |
-      #       apk add --update --no-cache nodejs npm aws-cli
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update --no-cache nodejs npm aws-cli
 
       - run:
           name: Run migrations
@@ -238,7 +238,7 @@ jobs:
             npm install
             npm run migrations > migrations_dump.txt
             cat migrations_dump.txt
-            npm audit fix --audit-level=critical
+          
       - run:
           name: Send migration results to kvdb.io
           command: |
