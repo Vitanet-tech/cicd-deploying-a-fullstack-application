@@ -231,7 +231,7 @@ jobs:
       #     command: |
       #       apk add --update --no-cache nodejs npm aws-cli
 
-  
+
       - run:
           name: Run migrations
           command: |
