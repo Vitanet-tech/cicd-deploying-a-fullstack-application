@@ -302,14 +302,10 @@ jobs:
       # Attach workspace
       - attach_workspace:
           at: ~/
-      # Install dependencies
       - run:
           name: Install dependencies
           command: |
-            pip install awscli
-            pip install ansible
-            sudo apt update
-            sudo apt install nodejs npm
+            apk add --update --no-cache ansible tar gzip nodejs npm curl aws-cli
       - run:
           name: Deploy backend
           command: |
