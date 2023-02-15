@@ -289,7 +289,6 @@ jobs:
             workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
 
-
 # deploy-backend                
   deploy-backend:
     docker:
@@ -354,8 +353,6 @@ jobs:
             echo $BACKEND
             export API_URL="http://${BACKEND}:3030"
             echo "API_URL=${API_URL}"
-            echo "Sleeping for 1 minute"
-            sleep 60
             if curl -v "${API_URL}/api/status" | grep "ok"
             then
               return 0
