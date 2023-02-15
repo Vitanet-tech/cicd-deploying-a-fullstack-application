@@ -348,8 +348,12 @@ jobs:
             --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
             --query "Reservations[*].Instances[*].PublicDnsName" \
             --output text)
-            echo "${API_URL}"
-            export API_URL="http://${BACKEND_IP}:3030"            
+            echo ${BACKEND_IP}
+            export BACKEND=$(echo $BACKEND_IP | grep -o '[^ ]*$')
+            
+            echo $BACKEND
+            export API_URL="http://${BACKEND}:3030"
+            echo "API_URL=${API_URL}"           
       - run:
           name: Backend smoke test.
           command: |
