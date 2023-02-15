@@ -378,44 +378,43 @@ jobs:
       - revert-migrations:
             workflow_id: ${CIRCLE_WORKFLOW_ID:0:7} 
 
+
 # #################################################################
-# #   cloudfront-update:
 #   cloudfront-update:
-#     docker:
-#       # Docker image here that supports AWS CLI
-#       - image: amazon/aws-cli
-#     steps:
-#       # Checkout code from git
-#       - checkout
-#       - run:
-#           name: Install dependencies
-#           command: |
-#             yum install tar gzip -y
-#       - run:
-#           name: Get old stack workflow id
-#           command: |
-#             export OldWorkflowID=$(aws cloudformation \
-#               list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
-#               --no-paginate --output text | grep -o '[^-]*$' )
-#             echo $OldWorkflowID >> ~/project/OldWorkflowID.txt
-#             cat ~/project/OldWorkflowID.txt
-#       - persist_to_workspace:
-#           root: ~/
-#           paths:
-#             - project/OldWorkflowID.txt
-#       - run:
-#           name: Update cloudfront distribution
-#           command: |
-#             aws cloudformation deploy \
-#               --template-file .circleci/files/cloudfront.yml \
-#               --stack-name InitialStack \
-#               --parameter-overrides WorkflowID="udapeople-${CIRCLE_WORKFLOW_ID:0:7}" \
-#               --tags project=udapeople
-#             echo OldWorkflowID: cat ~/project/OldWorkflowID.txt
-#             echo CurrentWorflowID: "${CIRCLE_WORKFLOW_ID:0:7}"
-#     # Here's where you will add some code to rollback on failure
-#       - destroy-environment:
-#           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}   
+  cloudfront-update:
+    docker:
+      # Docker image here that supports AWS CLI
+      - image: circleci/node:13.8.0
+    steps:
+      # Checkout code from git
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            # your code here
+            sudo apt install -y tar curl gzip
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip -qq awscliv2.zip
+            sudo ./aws/install
+      - run:
+          name: Update cloudfront distribution
+          command: |
+            # your code here
+            export OldWorkflowID=$(aws cloudformation list-exports \
+            --query "Exports[?Name==\`WorkflowID\`].Value" \
+            --no-paginate --output text)
+            echo "${OldWorkflowID}" >> ~/OldWorkflowID.txt
+            echo "${OldWorkflowID}"
+            aws cloudformation deploy \
+            --template-file .circleci/files/cloudfront.yml \
+            --stack-name InitialStack \
+            --parameter-overrides WorkflowID=${CIRCLE_WORKFLOW_ID:0:7} \
+            --tags project=udapeople
+    # Here's where you will add some code to rollback on failure
+      - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+      - revert-migrations:
+            workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}              
 
 # cleanup:
 #     docker:
@@ -465,7 +464,7 @@ workflows:
           requires: [run-migrations]
       - smoke-test:
           requires: [deploy-backend, deploy-frontend]
-      # - cloudfront-update:
-      #     requires: [smoke-test]
+      - cloudfront-update:
+          requires: [smoke-test]
       # - cleanup:
       #     requires: [cloudfront-update]
