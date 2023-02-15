@@ -1,3 +1,7 @@
-URL01. https://github.com/Vitanet-tech/UdaPeople-c3-project
+URL01: https://github.com/Vitanet-tech/UdaPeople-c3-project
 
-URL02 http://udapeople-a6e7f95.s3-website-us-east-1.amazonaws.com
+URL02: http://udapeople-fd6a5e5.s3-website-us-east-1.amazonaws.com
+
+URL03: d10zhyntezzoec.cloudfront.net
+
+URL04: API_URL=http://ec2-3-236-132-26.compute-1.amazonaws.com:3030
