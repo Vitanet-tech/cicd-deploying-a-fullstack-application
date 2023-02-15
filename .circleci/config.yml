@@ -331,36 +331,36 @@ jobs:
   smoke-test:
     docker:
       # Lightweight Docker image
-      - image: python:3.10-alpine3.16 
+      - image: python:3.7-alpine3.16
     steps:
       # Checkout code from git
       - checkout
       - run:
           name: Install dependencies
           command: |
-            apk add --update --no-cache tar gzip nodejs npm curl aws-cli
+            # your code here
+            apk add --update --no-cache curl aws-cli nodejs npm
       - run:
-          name: Get backend url and Backend smoke test.
+          name: Get backend url
           command: |
+            # your code here
             export BACKEND_IP=$(aws ec2 describe-instances \
-            --query "Reservations[*].Instances[*].[PublicIpAddress]" \
             --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+            --query "Reservations[*].Instances[*].PublicDnsName" \
             --output text)
-            echo ${BACKEND_IP}
-            
-            export BACKEND=$(echo $BACKEND_IP | grep -o '[^ ]*$')
-            
-            echo $BACKEND
-            export API_URL="http://${BACKEND}:3030"
-            echo "API_URL=${API_URL}"
-            echo "Sleeping for 1 minute"
-            sleep 60
-            if curl -v "${API_URL}/api/status" | grep "ok"
-            then
-              return 0
-            else
-              return 1
-            fi 
+            echo "${API_URL}"
+            export API_URL="http://${BACKEND_IP}:3030"            
+      - run:
+          name: Backend smoke test.
+          command: |
+            # your code here
+            if [[ 'ok' =~ $(curl -s --connect-timeout 5 http://${BACKEND_IP}:3030/api/status | grep -o ok) ]];then return 0 else return 1;fi
+            # if curl "${API_URL}/api/status" | grep "ok"
+            # then
+            #     return 0
+            # else
+            #     return 1
+            # fi
       - run:
           name: Frontend smoke test.
           command: |
