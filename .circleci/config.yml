@@ -420,6 +420,7 @@ jobs:
       - revert-migrations:
             workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}              
 
+
 #############################################################
 #job to cleanup old stacks
 
@@ -432,8 +433,7 @@ jobs:
         - run:
             name: Install dependencies
             command: |
-              apk update
-              apk add nodejs npm tar gzip py3-pip curl aws-cli
+              yum install tar gzip -y
         # Attach workspace
         - attach_workspace:
             at: ~/
