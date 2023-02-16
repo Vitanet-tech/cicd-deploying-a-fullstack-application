@@ -74,7 +74,7 @@ jobs:
           paths: [backend/node_modules]
           key: backend-build
 
-########################################################
+#########################################################
 # Job to Test frontend and backend Codes
   test-frontend:
     docker:
@@ -103,6 +103,7 @@ jobs:
               cd backend
               npm install
               npm run test
+
 
 ##############################################################
 # Job to scan our frontend and backend Codes to check for vulnerabilities           
@@ -138,6 +139,7 @@ jobs:
 
 #################################################################
 # deploy infrastructure for backend and frontend.
+#----------------------------------------------------
   #deploy EC2 instance for backend
   deploy-infrastructure:
     docker:
@@ -181,6 +183,7 @@ jobs:
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
+
  ####################################################################
   # Exercise: Configure infra after deployment.
   configure-infrastructure:
@@ -212,7 +215,6 @@ jobs:
       # Here's where you will add some code to rollback on failure
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}      
-
 
 
 ###########################################################
@@ -287,7 +289,6 @@ jobs:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
       - revert-migrations:
             workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
-
 
 # deploy-backend                
   deploy-backend:
@@ -447,6 +448,7 @@ jobs:
             workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}              
 
 
+########################################################
   cleanup:
       docker:
         # Docker image here
@@ -483,9 +485,9 @@ jobs:
                     echo  "----------------Cannot cleanup------------"
                 fi
               done
-            
-##############################################################
 
+           
+##############################################################
 workflows:
   default:
     jobs:
