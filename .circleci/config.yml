@@ -248,39 +248,46 @@ jobs:
 #   deploy-frontend
   deploy-frontend:
     docker:
-      - image: python:3.10-alpine3.16
+      # Docker image here that supports AWS CLI
+      - image: circleci/node:13.8.0
     steps:
+      # Checkout code from git
       - checkout
-      - attach_workspace:
-          at: ~/
+      - aws-cli/setup
       - run:
           name: Install dependencies
           command: |
-            apk add --update --no-cache tar
-            apk add --update --no-cache gzip
-            apk add --update --no-cache nodejs
-            apk add --update --no-cache npm
-            apk add --update --no-cache aws-cli
-            apk add --update --no-cache curl 
+            # your code here
+            sudo apt update && \
+            sudo apt install -y tar gzip curl
+      - run:
+          name: Install npm
+          command: |
+             # your code here
+      - attach_workspace:
+          at: ~/
       - run:
           name: Get backend url
           command: |
+            # your code here
             export BACKEND_IP=$(aws ec2 describe-instances \
-            --query "Reservations[*].Instances[*].[PublicIpAddress]" \
             --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+            --query "Reservations[*].Instances[*].PublicIpAddress" \
             --output text)
             export API_URL="http://${BACKEND_IP}:3030"
-            echo "API_URL=${API_URL}"
+            echo "${API_URL}"
+            echo "API_URL = ${API_URL}"
             echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
             cat frontend/.env
       - run:
           name: Deploy frontend objects
           command: |
+            # your code here
             cd frontend
             npm install
             npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
-            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive 
+            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
             
       # Here's where you will add some code to rollback on failure
       - destroy-environment:
@@ -293,31 +300,38 @@ jobs:
   deploy-backend:
     docker:
       # Docker image here that supports Ansible
-      - image: python:3.10-alpine3.16
+      - image: python:3.7-alpine3.16
     steps:
+      # Checkout code from git
       - checkout
+      # Add ssh keys with fingerprint
       - add_ssh_keys:
-              fingerprints: ["81:ab:74:62:1f:4f:b2:a7:aa:83:bd:71:e0:39:9f:c5"]
-      # Attach workspace
-      - attach_workspace:
-          at: ~/
+           fingerprints: ["81:ab:74:62:1f:4f:b2:a7:aa:83:bd:71:e0:39:9f:c5"]
+      # attach workspace
       - run:
           name: Install dependencies
           command: |
-            apk add --update --no-cache ansible tar gzip nodejs npm curl aws-cli
-      - run:
+            apk add --update --no-cache tar gzip nodejs npm aws-cli ansible
+      - restore_cache:
+          keys: [backend-build]
+      # attach workspace
+      - attach_workspace:
+          at: ~/
+      - run: 
           name: Deploy backend
           command: |
-            cd backend
-            npm install
-            npm run build
-            cd ..
-            # Zip the directory
-            tar -C backend -czvf artifact.tar.gz .
-            cd .circleci/ansible
-            echo "Contents  of the ~/project/.circleci/ansible/inventory.txt file is -------"
-            cat inventory.txt
-            ansible-playbook -i ~/project/.circleci/ansible/inventory.txt deploy-backend.yml
+             cd backend
+             npm i
+             npm run build 
+             cd ..
+             # Zip the directory
+             tar -C backend -czvf artifact.tar.gz .
+             mkdir -p ~/project/.circleci/ansible/roles/deploy/files/
+             mv artifact.tar.gz .circleci/ansible/roles/deploy/files/artifact.tar.gz
+             cd .circleci/ansible
+             echo "Contents  of the inventory.txt file is -------"
+             cat inventory.txt
+             ansible-playbook -i inventory.txt deploy-backend.yml
       
       # Here's where you will add some code to rollback on failure
       - destroy-environment:
@@ -421,7 +435,7 @@ jobs:
             workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}              
 
 
-#############################################################@@@
+#############################################################
 #job to cleanup old stacks
 
   cleanup:
@@ -429,38 +443,50 @@ jobs:
         # Docker image here
         - image: amazon/aws-cli
       steps:
+        # Checkout code from git
         - checkout
         - run:
-            name: Install dependencies
+            name: Get old stack workflow id and remove old stacks and bucket contents
             command: |
-              yum install tar gzip -y
-        # Attach workspace
-        - attach_workspace:
-            at: ~/
-        - run:
-            name: Get old stacknames (frontend and backend)
-            command: |
-              OLD_BUCKET_NAME=$(cat ~/project/old-bucket-name.txt)
-              OLD_BACKEND_STACKNAME=$(cat ~/project/old-backend-stackname.txt)
-              OLD_FRONTEND_STACKNAME=$(cat ~/project/old-frontend-stackname.txt)
-              echo "Old Backend StackName:" $OLD_BACKEND_STACKNAME
-              echo "Old Frontend StackName:" $OLD_FRONTEND_STACKNAME
-              echo "Old Bucket Name:" $OLD_BUCKET_NAME
-        - run:
-            name: Remove old stacks and files (If Exists)
-            command: |
-              OLD_BUCKET_NAME=$(cat ~/project/old-bucket-name.txt)
-              OLD_BACKEND_STACKNAME=$(cat ~/project/old-backend-stackname.txt)
-              OLD_FRONTEND_STACKNAME=$(cat ~/project/old-frontend-stackname.txt)
-              if [[ $OLD_BUCKET_NAME != "" ]]
-              then
-                echo "Existing stacks to Clean Found!"
-                aws s3 rm "s3://${OLD_BUCKET_NAME}" --recursive
-                aws cloudformation delete-stack --stack-name "${OLD_BACKEND_STACKNAME}"
-                aws cloudformation delete-stack --stack-name "${OLD_FRONTEND_STACKNAME}"
-              else
-                echo "No existing stacks to Clean." && exit 0
-              fi
+              # Fetch the Old workflow ID
+              export OldWorkflowID=$(aws cloudformation \
+                list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
+                  --no-paginate --output text)
+              echo OldWorkflowID: "${OldWorkflowID}"
+              echo CIRCLE_WORKFLOW_ID "${CIRCLE_WORKFLOW_ID:0:7}"
+              # Fetch the stack names
+              export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
+              --stack-status-filter CREATE_COMPLETE --no-paginate --output text))
+              STACKSID=($(aws cloudformation describe-stacks --query "Stacks[*].Outputs[?OutputKey==\`ID\`].OutputValue" --no-paginate --output text))
+              echo Stack ids: "${STACKSID[@]}"
+              echo Stack names: "${STACKS[@]}"
+              echo $OldWorkflowID ${CIRCLE_WORKFLOW_ID:0:7}
+              
+              # for (( index=0; index<${#STACKS[@]}; index+=2 )) 
+              # do
+              #   if [[ "${CIRCLE_WORKFLOW_ID:0:7}" != "${STACKS[index]##*-}" ]]
+              #   then
+              #       # your code here
+              #       echo "----------Deletes cofirmed------------"
+              #       aws s3 rm "s3://udapeople-${STACKS[index]##*-}" --recursive
+              #       aws cloudformation delete-stack --stack-name "${STACKS[index]}"
+              #       aws cloudformation delete-stack --stack-name "${STACKS[((++index))]}"
+              #   else
+              #       echo "----------Cannot cleanup------------"
+              #   fi
+              # done
+              for i in "${STACKSID[@]}"
+              do
+                if [[ "${CIRCLE_WORKFLOW_ID:0:7}" != "$i" ]]
+                then
+                    echo "----------------Delete confirmed-----------"
+                    aws s3 rm "s3://udapeople-$i" --recursive
+                    aws cloudformation delete-stack --stack-name "udapeople-frontend-$i"
+                    aws cloudformation delete-stack --stack-name "udapeople-backend-$i"
+                else
+                    echo  "----------------Cannot cleanup------------"
+                fi
+              done
             
 
 workflows:
