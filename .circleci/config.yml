@@ -466,19 +466,6 @@ jobs:
               echo Stack names: "${STACKS[@]}"
               echo $OldWorkflowID ${CIRCLE_WORKFLOW_ID:0:7}
               
-              # for (( index=0; index<${#STACKS[@]}; index+=2 )) 
-              # do
-              #   if [[ "${CIRCLE_WORKFLOW_ID:0:7}" != "${STACKS[index]##*-}" ]]
-              #   then
-              #       # your code here
-              #       echo "----------Deletes completed------------"
-              #       aws s3 rm "s3://udapeople-${STACKS[index]##*-}" --recursive
-              #       aws cloudformation delete-stack --stack-name "${STACKS[index]}"
-              #       aws cloudformation delete-stack --stack-name "${STACKS[((++index))]}"
-              #   else
-              #       echo "----------Cleanup failed------------"
-              #   fi
-              # done
               for i in "${STACKSID[@]}"
               do
                 if [[ "${CIRCLE_WORKFLOW_ID:0:7}" != "$i" ]]
