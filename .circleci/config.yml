@@ -238,9 +238,12 @@ jobs:
           name: Run migrations
           command: |
             cd backend
-            npm install
+            # Run and save the migration output
+            npm install --no-audit --no-fund
             npm run migrations > migrations_dump.txt
             cat migrations_dump.txt
+            # no_output_timeout: 5m
+
       - run:
           name: Send migration results to kvdb
           command: |
