@@ -224,7 +224,16 @@ jobs:
       # Docker image here that supports NodeJS
       - image: circleci/node:13.8.0
     steps:
+      # Checkout code from git
       - checkout
+      - restore_cache:
+          keys: [backend-build]
+      
+      # - run:
+      #     name: Install dependencies
+      #     command: |
+      #       apk add --update --no-cache nodejs npm aws-cli
+
       - run:
           name: Run migrations
           command: |
