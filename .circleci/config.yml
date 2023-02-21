@@ -217,7 +217,7 @@ jobs:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}      
 
 
-###########################################################
+#######################################################
 # Migrations to db
   run-migrations:
     docker:
@@ -239,11 +239,11 @@ jobs:
             then
                 curl -k https://kvdb.io/7yuW7WwQfzsquGYkNK1SFZ/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
-      # Here's where you will add some code to rollback on failure...
+      # Here's where you will add some code to rollback on failure..
       - destroy-environment:
           workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
       - revert-migrations:
-          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"   
+          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
 
 
 #############################################################
