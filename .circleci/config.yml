@@ -22,18 +22,20 @@ commands:
     parameters:
       # Add parameter here
       workflow_id:
-         type: string     
+          type: string
+          default: "${CIRCLECI_WORKFLOW_ID}"
     steps:
       - run:
           name: Revert migrations
+          # Add when this will run
           when: on_fail
           command: |
-            SUCCESS=$(curl --insecure  https://kvdb.io/7yuW7WwQfzsquGYkNK1SFZ/migration_${CIRCLE_WORKFLOW_ID:0:7})
-            if (($SUCCESS == 1))
+            # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
+            SUCCESS=$(curl -k "https://kvdb.io/7yuW7WwQfzsquGYkNK1SFZ/migration_<< parameters.workflow_id >>")
+            if(( $SUCCESS==1 )); 
             then
               cd ~/project/backend
               npm install
-              npm run build
               npm run migrations:revert
             fi
 
