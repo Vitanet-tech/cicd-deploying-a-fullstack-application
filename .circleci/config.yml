@@ -34,7 +34,7 @@ commands:
             SUCCESS=$(curl -k "https://kvdb.io/7yuW7WwQfzsquGYkNK1SFZ/migration_<< parameters.workflow_id >>")
             if(( $SUCCESS==1 )); 
             then
-              cd ~/project/backend
+              cd backend
               npm install
               npm run migrations:revert
             fi
@@ -168,6 +168,7 @@ jobs:
               --tags project=udapeople \
               --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
+              
       # Fetch add append the public IP address of the EC2 instance to inventory.txt file
       - run:
           name: Add back-end ip to ansible inventory
