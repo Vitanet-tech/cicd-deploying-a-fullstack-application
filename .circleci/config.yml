@@ -1,29 +1,6 @@
 version: 2.1
 
 commands:
-  install_nodejs:
-    description: Install Node.js 13.8.0
-    steps:
-      - run:
-          name: Install Node.js 13.8.0
-          command: |
-            # Install Node.js LTS version as our base Node.js version
-            curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
-            sudo apt install -y nodejs
-            # Use n version manager to use Node.js v13.8.0
-            sudo npm install --global n
-            sudo n 13.8.0
-  install_awscli:
-    description: Install AWS CLI v2
-    steps:
-      - run:
-          name: Install AWS CLI v2
-          command: |
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
-            sudo ./aws/install
-
-##############################################################################
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
@@ -45,18 +22,18 @@ commands:
     parameters:
       # Add parameter here
       workflow_id:
-        type: string
-        default: "${CIRCLE_WORKFLOW_ID}"
+         type: string     
     steps:
       - run:
           name: Revert migrations
           when: on_fail
           command: |
-            SUCCESS=$(curl --insecure https://kvdb.io/7yuW7WwQfzsquGYkNK1SFZ/migration_${CIRCLE_WORKFLOW_ID:0:7})
-            if [ $SUCCESS == "1" ];
+            SUCCESS=$(curl --insecure  https://kvdb.io/7yuW7WwQfzsquGYkNK1SFZ/migration_${CIRCLE_WORKFLOW_ID:0:7})
+            if (($SUCCESS == 1))
             then
               cd ~/project/backend
               npm install
+              npm run build
               npm run migrations:revert
             fi
 
@@ -245,11 +222,11 @@ jobs:
 # Migrations to db
   run-migrations:
     docker:
-      - image: cimg/python:3.10
+      # Docker image here that supports NodeJS
+      - image: circleci/node:13.8.0
     steps:
+      # Checkout code from git
       - checkout
-      - install_awscli
-      - install_nodejs
       - restore_cache:
           keys: [backend-build]
       - run:
