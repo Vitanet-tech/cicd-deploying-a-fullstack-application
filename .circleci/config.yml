@@ -22,21 +22,20 @@ commands:
     parameters:
       # Add parameter here
       workflow_id:
-          type: string
-          default: "${CIRCLECI_WORKFLOW_ID}"
+        type: string
+        default: "${CIRCLE_WORKFLOW_ID}"
     steps:
       - run:
           name: Revert migrations
-          # Add when this will run
           when: on_fail
           command: |
-            # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-            SUCCESS=$(curl -k "https://kvdb.io/7yuW7WwQfzsquGYkNK1SFZ/migration_<< parameters.workflow_id >>")
-            if(( $SUCCESS==1 )); 
+            SUCCESS=$(curl --insecure https://kvdb.io/7yuW7WwQfzsquGYkNK1SFZ/migration_${CIRCLE_WORKFLOW_ID:0:7})
+            if (( $SUCCESS == 1 ))
             then
-              cd backend
+              cd ~/project/backend
               npm install
-              npm run migrations:revert
+              npm run build
+              npm run migration:revert
             fi
 
 ############################################################
@@ -224,19 +223,13 @@ jobs:
 # Migrations to db
   run-migrations:
     docker:
-      # Docker image here that supports NodeJS
-      - image: circleci/node:13.8.0
+      - image: cimg/python:3.10
     steps:
-      # Checkout code from git
       - checkout
+      - install_awscli
+      - install_nodejs
       - restore_cache:
           keys: [backend-build]
-
-      # - run:
-      #     name: Install dependencies
-      #     command: |
-      #       apk add --update --no-cache nodejs npm aws-cli
-
       - run:
           name: Run migrations
           command: |
@@ -366,7 +359,7 @@ jobs:
   smoke-test:
     docker:
       # Lightweight Docker image
-      - image: circleci/node:13.8.0
+      - image: python:3.7-alpine3.16
     steps:
       # Checkout code from git
       - checkout
