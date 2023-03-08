@@ -1,53 +1,23 @@
-We are archiving this repository because we do not want learners to push personal development to the current repository. If you have any issues or suggestions to make, feel free to:
-- Utilize the https://knowledge.udacity.com/ forum to seek help on content-specific issues.
-- [Submit a support ticket](https://udacity.zendesk.com/hc/en-us/requests/new) along with the link to your forked repository. 
-- If you are an enterprise learner, please [Submit a support ticket here](https://udacityenterprise.zendesk.com/hc/en-us/requests/new?ticket_form_id=360000279131)
+### Give your Application Auto-Deploy Superpowers
 
-## Give your Application Auto-Deploy Superpowers
+## Introduction.
 
-In this project, We will prove your mastery of the following learning objectives:
+■	As we know, technology plays a crucial role in driving business growth and competitiveness. it's essential to stay up-to-date with the latest tools and practices. One such practice is Continuous Integration and Continuous Deployment (CI/CD).
 
-- Explain the fundamentals and benefits of CI/CD to achieve, build, and deploy automation for cloud-based software products.
-- Utilize Deployment Strategies to design and build CI/CD pipelines that support Continuous Delivery processes.
-- Utilize a configuration management tool to accomplish deployment to cloud-based servers.
-- Surface critical server errors for diagnosis using centralized structured logging.
+■	CI/CD (Continuous Integration/Continuous Deployment) is a software development practice that helps teams automate the building, testing, and deployment of software.
+
+■	Continuous Integration (CI) is the process of automatically compiling and testing code changes as they are made by developers. Every time a developer checks in their code to a shared repository, the CI tool automatically builds the application and runs tests to ensure that the code changes do not break any existing functionality. This helps to catch issues early in the development process, reducing the risk of bugs and errors creeping into the software.
+
+■	Continuous Deployment (CD) is the process of automatically deploying new code changes to production environments. Once the code has been built and tested by the CI system, it can be automatically deployed to the cloud-based infrastructure where the application is hosted. This process ensures that the most up-to-date version of the software is always running in production, without any manual intervention needed.
+
+![image](https://user-images.githubusercontent.com/99427790/223754928-ba2d8dd2-5e1f-4346-abf2-bf3e54a59222.png)
 
 
-### Instructions
 
-* [Selling CI/CD](instructions/0-selling-cicd.md)
-* [Getting Started](instructions/1-getting-started.md)
-* [Deploying Working, Trustworthy Software](instructions/2-deploying-trustworthy-code.md)
-* [Configuration Management](instructions/3-configuration-management.md)
-* [Turn Errors into Sirens](instructions/4-turn-errors-into-sirens.md)
+### Business benefits of implementing CI/CD pipeline in organization
 
-### Project Submission
+![image](https://user-images.githubusercontent.com/99427790/223755213-2231e79d-f1a7-4c59-8eeb-b1124edd4c98.png)
 
-For your submission, please submit the following:
-
-- A text file named `urls.txt` including:
-  1. Public Url to GitHub repository (not private) [URL01]
-  1. Public URL for your S3 Bucket (aka, your green candidate front-end) [URL02]
-  1. Public URL for your CloudFront distribution (aka, your blue production front-end) [URL03]
-  1. Public URLs to deployed application back-end in EC2 [URL04]
-  1. Public URL to your Prometheus Server [URL05]
-- Your screenshots in JPG or PNG format, named using the screenshot number listed in the instructions. These screenshots should be included in your code repository in the root folder.
-  1. Job failed because of compile errors. [SCREENSHOT01]
-  1. Job failed because of unit tests. [SCREENSHOT02]
-  1. Job that failed because of vulnerable packages. [SCREENSHOT03]
-  1. An alert from one of your failed builds. [SCREENSHOT04]
-  1. Appropriate job failure for infrastructure creation. [SCREENSHOT05]
-  1. Appropriate job failure for the smoke test job. [SCREENSHOT06]
-  1. Successful rollback after a failed smoke test. [SCREENSHOT07]  
-  1. Successful promotion job. [SCREENSHOT08]
-  1. Successful cleanup job. [SCREENSHOT09]
-  1. Only deploy on pushed to `master` branch. [SCREENSHOT10]
-  1. Provide a screenshot of a graph of your EC2 instance including available memory, available disk space, and CPU usage. [SCREENSHOT11]
-  1. Provide a screenshot of an alert that was sent by Prometheus. [SCREENSHOT12]
-
-- Your presentation should be in PDF format named "presentation.pdf" and should be included in your code repository root folder. 
-
-Before you submit your project, please check your work against the project rubric. If you haven’t satisfied each criterion in the rubric, then revise your work so that you have met all the requirements. 
 
 ### Built With
 
