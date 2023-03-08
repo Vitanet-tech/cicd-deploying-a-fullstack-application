@@ -5,7 +5,7 @@ We are archiving this repository because we do not want learners to push persona
 
 ## Give your Application Auto-Deploy Superpowers
 
-In this project, you will prove your mastery of the following learning objectives:
+In this project, We will prove your mastery of the following learning objectives:
 
 - Explain the fundamentals and benefits of CI/CD to achieve, build, and deploy automation for cloud-based software products.
 - Utilize Deployment Strategies to design and build CI/CD pipelines that support Continuous Delivery processes.
@@ -58,6 +58,4 @@ Before you submit your project, please check your work against the project rubri
 - [Ansible](https://www.ansible.com/) - Configuration management tool
 - [Prometheus](https://prometheus.io/) - Monitoring tool
 
-### License
 
-[License](LICENSE.md)
