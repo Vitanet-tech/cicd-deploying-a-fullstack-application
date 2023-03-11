@@ -21,9 +21,11 @@ A CI-CD pipeline for a client/server TypeScript project with backend hosted on A
 ![image](https://user-images.githubusercontent.com/99427790/223754928-ba2d8dd2-5e1f-4346-abf2-bf3e54a59222.png)
 
 
+
 ### Business benefits of implementing CI/CD pipeline in organization
 
 ![image](https://user-images.githubusercontent.com/99427790/223755213-2231e79d-f1a7-4c59-8eeb-b1124edd4c98.png)
+
 
 
 
@@ -37,6 +39,8 @@ A CI-CD pipeline for a client/server TypeScript project with backend hosted on A
 - [Prometheus](https://prometheus.io/) - Monitoring tool
 
 
+
+
 ## Prerequisites
 
 * [Nodejs 13](https://nodejs.org/en/)
@@ -48,8 +52,10 @@ A CI-CD pipeline for a client/server TypeScript project with backend hosted on A
 * [Slack api App and Workspace](https://slack.com/)
 
 
+
 ## Project Pipeline
 ![image](https://user-images.githubusercontent.com/99427790/224472459-7c94be40-9737-4871-b68b-f93e2216ba59.png)
+
 
 
 ## Project files
@@ -60,6 +66,7 @@ Relevant project files
 * [Backend Folder](./backend/) : Contains the backend files of the application, access the [README](./backend/README.md) on how to use locally
 
 * [Circleci Folder](.circleci): Contains the circleci [config file](.circleci/config.yml) for the CI/CD pipeline as well as the [ansible folder](.circleci/ansible/) with the different playbooks for server configuration. The [files folder](.circleci/files/) contains the cloud formation templates for AWS infrastructure provisioning.
+
 
 
 ## Project Submission  
