@@ -49,7 +49,7 @@ A CI-CD pipeline for a client/server TypeScript project with backend hosted on A
 
 
 ## Project Pipeline
-![Project Workflow](./screenshots%20taken/udapeople-pipeline.png)
+![image](https://user-images.githubusercontent.com/99427790/224472459-7c94be40-9737-4871-b68b-f93e2216ba59.png)
 
 
 ## Project files
@@ -63,4 +63,4 @@ Relevant project files
 
 
 ## Project Submission  
-![Project Steps](./screenshots%20taken/project-steps.jpg)
+![image](https://user-images.githubusercontent.com/99427790/224472559-7e881341-5523-48c0-849f-2b9170478530.png)
